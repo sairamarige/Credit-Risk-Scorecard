@@ -1,0 +1,82 @@
+level,customers,bad,bad_rate_pct,variable
+Golf Card,30,7,23.333333333333332,feature_1
+Insignia,58,4,6.896551724137931,feature_1
+Platinum Deligh,2,0,0.0,feature_1
+Platinum Maxima,7,0,0.0,feature_1
+Titanium Deligh,903,22,2.436323366555925,feature_1
+Company,16,1,6.25,feature_32
+Parents,93,6,6.451612903225806,feature_32
+Rented,275,3,1.090909090909091,feature_32
+Self,616,23,3.7337662337662336,feature_32
+CA,3,0,0.0,feature_27
+Diploma,10,0,0.0,feature_27
+Doctor,1,0,0.0,feature_27
+Engineer,2,0,0.0,feature_27
+Graduate,636,18,2.8301886792452833,feature_27
+MBA/MMS,7,0,0.0,feature_27
+Others,7,0,0.0,feature_27
+Post-Graduate,180,4,2.2222222222222223,feature_27
+Professional,5,0,0.0,feature_27
+missing,149,11,7.38255033557047,feature_27
+Banking/Financial Services,609,14,2.2988505747126435,feature_37
+Health Care,1,0,0.0,feature_37
+Industrial,24,1,4.166666666666666,feature_37
+Information Technology,41,0,0.0,feature_37
+KPO/LPO/ITES,11,0,0.0,feature_37
+Manufacturing,3,0,0.0,feature_37
+Others,46,3,6.521739130434782,feature_37
+Real Estate,2,0,0.0,feature_37
+missing,263,15,5.7034220532319395,feature_37
+Government Organisation,40,2,5.0,feature_36
+MNC,85,1,1.1764705882352942,feature_36
+Private Ltd. Co.,352,5,1.4204545454545454,feature_36
+Proprietorship,10,2,20.0,feature_36
+Public Ltd Co.,250,8,3.2,feature_36
+missing,263,15,5.7034220532319395,feature_36
+Aadhar Card,14,0,0.0,feature_46
+Driving License,8,0,0.0,feature_46
+PAN Card,935,29,3.1016042780748663,feature_46
+Passport,19,2,10.526315789473683,feature_46
+Voter ID,6,0,0.0,feature_46
+missing,18,2,11.11111111111111,feature_46
+Ahmedabad,4,0,0.0,feature_28
+Ankleshwar,1,0,0.0,feature_28
+Bengaluru,21,1,4.761904761904762,feature_28
+Chennai,12,1,8.333333333333332,feature_28
+Faridabad,41,1,2.4390243902439024,feature_28
+Ghaziabad,61,1,1.639344262295082,feature_28
+Gurgaon,67,3,4.477611940298507,feature_28
+Hyderabad / Secunderabad,67,0,0.0,feature_28
+Kanchipuram,1,0,0.0,feature_28
+Kolhapur,4,0,0.0,feature_28
+Kolkata / Howrah,9,2,22.22222222222222,feature_28
+Lucknow,6,1,16.666666666666664,feature_28
+Mumbai / Navi Mumbai / Thane,66,3,4.545454545454546,feature_28
+Nagpur,1,0,0.0,feature_28
+New Delhi,580,16,2.7586206896551726,feature_28
+Noida / Greater Noida,31,2,6.451612903225806,feature_28
+Pune,6,1,16.666666666666664,feature_28
+Rangareddy,8,0,0.0,feature_28
+Surat,1,0,0.0,feature_28
+Udaipur,1,0,0.0,feature_28
+Vadodara,12,1,8.333333333333332,feature_28
+O,354,10,2.824858757062147,feature_72
+R,646,23,3.560371517027864,feature_72
+1,121,6,4.958677685950414,feature_4
+2,97,3,3.0927835051546393,feature_4
+3,782,24,3.0690537084398977,feature_4
+1,943,29,3.0752916224814424,feature_55
+2,12,1,8.333333333333332,feature_55
+3,43,2,4.651162790697675,feature_55
+4,2,1,50.0,feature_55
+0,989,31,3.1344792719919106,feature_76
+1,9,2,22.22222222222222,feature_76
+2,1,0,0.0,feature_76
+3,1,0,0.0,feature_76
+0,265,13,4.905660377358491,feature_26
+1,203,6,2.955665024630542,feature_26
+2,409,9,2.2004889975550124,feature_26
+3,101,5,4.9504950495049505,feature_26
+4,15,0,0.0,feature_26
+5,6,0,0.0,feature_26
+6,1,0,0.0,feature_26

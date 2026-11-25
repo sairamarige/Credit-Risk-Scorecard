@@ -1,0 +1,23 @@
+table,issue,rows_or_cols_affected,action
+accounts,exact duplicate rows,5,dropped (same account reported twice)
+accounts,payment history strings wrapped in stray quotes,995,quotes stripped; history1+history2 concatenated
+accounts,logic check - closed before opened,0,flagged only (no row removed)
+accounts,logic check - last payment before opened,1,flagged only (no row removed)
+accounts,logic check - opened after bureau upload date,0,flagged only (no row removed)
+accounts,logic check - negative balance,50,flagged only (no row removed)
+accounts,logic check - balance > high credit amount,10,flagged only (no row removed)
+accounts,creditlimit/cashlimit/rateofinterest/paymentfrequency/actualpaymentamount mostly null,76-88% null,kept as NaN (information only exists for credit cards / some loans)
+enquiries,"blank enquiry records (ids only, no enquiry details)",1,dropped - customer treated as having no enquiry history
+enquiries,exact duplicate rows,40,kept - repeat identical enquiries are a real behaviour signal
+enquiries,enquiry dated AFTER the application,0,none found
+enquiries,enq_amt equal to 0 or placeholder (<=1000),174,kept; treated as small-ticket/credit-card style enquiry
+demographics,duplicate customer_no,0,none - one row per customer
+demographics,target Bad_label distribution,33 bad / 1000,"severe class imbalance -> stratified CV, AUC/Gini metrics"
+demographics,constant / all-null columns,"feature_5,feature_6,feature_10,feature_54,feature_61,feature_62,feature_74",dropped (no information)
+demographics,>90% null columns,"feature_8,feature_9,feature_17,feature_18,feature_49,feature_57,feature_73",dropped (too sparse to learn from 1000 rows)
+demographics,exact duplicate columns,"feature_59==feature_11,feature_68==feature_34,feature_69==feature_35",dropped the copy
+demographics,implausible age (<18 or >90),0,none
+demographics,income-like field feature_35 uses placeholder 1,192,placeholder -> NaN + missing flag
+demographics,"feature_3 (score-like, range 553-796) missing",97,"kept NaN, missing flag added, median-imputed inside the model pipeline"
+demographics,truncated category labels in feature_32 (Paren/Compa/Rente),1000,expanded to Parents/Company/Rented (assumption)
+demographics,PII / identifier / free-text / high-cardinality code columns,"feature_15,feature_16,feature_2,feature_20,feature_21,feature_22,feature_24,feature_29,feature_38,feature_44,feature_45,feature_47,feature_63,feature_66,feature_70,feature_75,feature_77",dropped from clean file (privacy & no generalisable signal); derived safe features kept

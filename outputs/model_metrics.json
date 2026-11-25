@@ -1,0 +1,35 @@
+{
+  "n_customers": 1000,
+  "n_bad": 33,
+  "bad_rate_pct": 3.3000000000000003,
+  "cv_protocol": "5-fold stratified x 5 repeats",
+  "best_model": "Logistic regression (L2, strong reg.)",
+  "best_cv_gini_mean": 43.281000282034405,
+  "best_cv_gini_std": 2.5605794387073195,
+  "pooled_oof_gini": 45.4200745824324,
+  "pooled_oof_gini_ci95": [
+    24.66218545329197,
+    63.88189025727803
+  ],
+  "permutation_p_value": 0.000999000999000999,
+  "ks_pct": 42.95384036852496,
+  "reduced_model_vars": 27,
+  "reduced_model_cv_gini_mean": 36.65005797373947,
+  "holdout_70_30_gini": {
+    "Logistic regression (L2, strong reg.)": 37.6551724137931,
+    "Logistic regression (L1 sparse)": 40.620689655172406,
+    "Random forest": 35.17241379310345,
+    "Gradient boosting (shallow)": 48.758620689655174
+  },
+  "holdout_bad_in_test": 10,
+  "single_field_feature_3_gini": {
+    "low_score_riskier": -1.056062172918415,
+    "high_score_riskier": 1.056062172918426
+  },
+  "benchmark_gini": 37.9,
+  "score_card": {
+    "base_score": 650,
+    "base_odds_good_to_bad": 30,
+    "pdo": 40
+  }
+}
