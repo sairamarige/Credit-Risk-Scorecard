@@ -4,8 +4,6 @@ Predicting which credit-card customers are likely to become **"bad"** (reach 30+
 
 > **One-line result:** a heavily regularised logistic regression reaches a cross-validated **Gini of 43.3 ± 2.6** (reference model: 37.9). The riskiest 10% of customers have a **12% bad rate (3.6× the average)** and the riskiest 20% contain **58% of all bad customers**. With only 33 bad customers, the 95% confidence interval is wide (**≈ 25 to 64**), so treat this as promising evidence rather than proof.
 
-See also: [`REPORT_CARD.md`](REPORT_CARD.md) for the one-page summary.
-
 ---
 
 ## 1. Contents
@@ -20,10 +18,7 @@ See also: [`REPORT_CARD.md`](REPORT_CARD.md) for the one-page summary.
 | [7. Modelling and evaluation](#7-modelling-and-evaluation) | models, validation, results |
 | [8. Final feature matrix](#8-final-feature-matrix) | features with gain |
 | [9. Limitations and honest caveats](#9-limitations-and-honest-caveats) | what this can and can't claim |
-| [10. Recommendations](#10-recommendations) | business and next steps |
-| [11. Questions and answers](#11-questions-and-answers) | 30 questions, from basic to deep |
-| [12. Glossary](#12-glossary) | plain-English definitions |
-| [13. Repository layout and how to run](#13-repository-layout-and-how-to-run) | |
+| [10. Repository layout and how to run](#10-repository-layout-and-how-to-run) | |
 
 ---
 
@@ -243,156 +238,7 @@ Gain = average of boosting and random-forest importance, normalised to sum to 1 
 
 ---
 
-## 10. Recommendations
-
-**For the business**
-* Use the score for **tiering and review**, not automatic decline: send the riskiest 10–20% to manual review (this captures 36–58% of bad customers).
-* Examine the **Golf Card** portfolio (23% bad on 30 customers) and tighten checks when income-type data is missing.
-* Make sure income and score fields are captured at application: missing values are themselves predictive.
-
-**For the data**
-* **Fix the customer-ID link** between the three tables (accounts and enquiries must share IDs with demographics) and re-run; this is the single biggest upside.
-* Supply more history (hundreds of bad customers) and an out-of-time validation window.
-* Provide a data dictionary for the anonymised features and the product codes.
-
-**For the model**
-* Retrain on the full population, then calibrate probabilities and monitor PSI/drift monthly.
-* Add a champion–challenger comparison before go-live.
-
----
-
-## 11. Questions and answers
-
-### Understanding the problem
-
-**1. What is this project in simple words?**
-Predicting which credit-card customers are likely to stop paying on time, giving each a number (credit score) so the bank can decide who needs closer attention.
-
-**2. What does "bad" mean?**
-`Bad_label = 1`: the customer reached 30+ days past due on a payment. `0` means they did not.
-
-**3. Why 300–900?**
-It is the familiar credit-score scale. The mapping is: base 650 at 30:1 good-to-bad odds, and every 40 points doubles the odds of being good.
-
-**4. What is Gini and why is it the metric?**
-Gini = 2 × AUC − 1. It measures how well the model *ranks* risky customers above safe ones. 0 = random, 100 = perfect. For credit scoring it is preferred over accuracy because with 96.7% good customers a model saying "everyone is good" is 96.7% accurate yet useless.
-
-**5. What is KS?**
-The largest gap between the cumulative share of bad and good customers when ranking by score. Ours is 43; above 30 is usually considered decent.
-
-### Data
-
-**6. Why do the three tables not link well?**
-Accounts customer numbers range up to 23,739 while demographics only goes to 1,000; the account and enquiry files look like slices of a larger database. Only 8 account customers and 50 enquiry customers match demographics on both `customer_no` and `dt_opened`. This is the main data limitation.
-
-**7. Did you drop rows?**
-Very few: 5 duplicate account rows and 1 blank enquiry. Everything else is flagged or kept so information is not lost.
-
-**8. Why drop columns like PAN, phone and email?**
-They are personal identifiers with no generalisable predictive value and a privacy risk. Safe derived features (age, free-email flag) were kept.
-
-**9. Why keep duplicate enquiries?**
-Identical repeated enquiries (same day, purpose, amount) often mean repeated credit-seeking, which is a risk signal.
-
-**10. What does `XXX`/`STD`/`000`/`900` in payment history mean?**
-`000` current, `STD` standard (current), `XXX` no data that month, numbers = days past due, `900` = capped severe delinquency (assumption).
-
-**11. How were missing values handled?**
-Median imputation plus missing-indicators *inside the cross-validation pipeline*. Missingness is informative here: customers missing income-type data were 7.8% bad vs 2.2%.
-
-**12. Why is `feature_3` weak though it looks like a score?**
-Its single-variable Gini is about 1: customers with 700+ values default as often as anyone. It may be an application score the bank already used to approve people, so the approved population is already filtered on it.
-
-### Modelling
-
-**13. Why logistic regression, not XGBoost?**
-With 33 events, flexible models memorise noise. Strong L2 regularisation won on cross-validation (43.3 vs 34.0 for boosting). It is also transparent and standard for scorecards.
-
-**14. Why not a simple train/test split?**
-A 30% test set holds ~10 bad customers, so Gini can swing by ±15 points. Repeated CV scores all 1,000 customers 5 times with different splits.
-
-**15. Is there data leakage?**
-All preprocessing is inside the sklearn Pipeline, and `customer_no` and dates are excluded as features. One mild exception is the 27-variable reduced model, where selection used all data; it is reported as optimistic and not used as the final model.
-
-**16. How do you know the model isn't just lucky?**
-A permutation test (shuffling labels 1,000 times) gives p = 0.001. The bootstrap CI (25–64) shows the *size* is uncertain, though it is above zero.
-
-**17. Does it beat the reference Gini of 37.9?**
-Point estimate yes (43.3), but the CI includes 37.9 and the reference used much richer bureau features. A fair claim: comparable or better.
-
-**18. Why does the single hold-out (37.7) differ from CV (43.3)?**
-10 bad customers in the test set. It illustrates the noise; CV is more reliable.
-
-**19. Why are the middle deciles not monotonic?**
-Only 1–3 bad customers per decile. Quintiles are steadier.
-
-**20. What does a lift of 3.6× mean?**
-In the riskiest decile the bad rate is 12% vs 3.3% average.
-
-### Features
-
-**21. Which features matter most?**
-`feature_7` (clear leader, +0.059 out-of-sample AUC), `days_entry_to_open`, card product (`feature_1`), `feature_30`, `feature_32`, `feature_52`.
-
-**22. Why do bureau features add so little?**
-They only exist for 8 (accounts) and 50 (enquiries) of 1,000 customers. The code is complete; on a properly linked dataset they should contribute.
-
-**23. What are `utilisation_trend` and `min_months_last_30_plus`?**
-Utilisation trend compares portfolio utilisation to average utilisation per account; `min_months_last_30_plus` is the smallest number of months back at which any account first showed 30+ DPD. Both are in `customer_master.csv`.
-
-### Interpretation and deployment
-
-**24. Can the bank use this tomorrow?**
-As a pilot for review-tiering, yes. For automated decisions, no: it needs more bad customers, properly linked bureau data, an out-of-time test and a fairness review.
-
-**25. What is the biggest risk?**
-Overstating confidence. 33 bad customers cannot support precise claims.
-
-**26. How should I present the headline?**
-"Cross-validated Gini ≈ 43 (range roughly 25–64 given 33 bad customers), with the riskiest 20% of customers holding 58% of bad accounts."
-
-**27. What would you do with more time or data?**
-Fix the table links, add hundreds more bad customers, out-of-time validation, WOE-binned scorecard, calibration, monotonic constraints, and fairness testing.
-
-### Reproducibility
-
-**28. How do I reproduce everything?**
-`pip install -r requirements.txt` then `python src/run_all.py` (about 5–10 minutes; the modelling step is the slow one).
-
-**29. Where are the cleaned datasets?**
-`data/clean/` : `accounts_clean.csv`, `enquiries_clean.csv`, `demographics_clean.csv`, `customer_master.csv` (modelling table), `model_matrix.csv` (encoded), `oof_predictions.csv` (out-of-fold risk, PD and credit score).
-
-**30. Can I score a new customer?**
-`outputs/final_model.joblib` holds the fitted pipeline and expected columns:
-```python
-import joblib, pandas as pd
-bundle = joblib.load("outputs/final_model.joblib")
-X_new = pd.read_csv("new_customers.csv")[bundle["columns"]]
-risk = bundle["model"].predict_proba(X_new)[:, 1]
-```
-(The model must be loaded with `src/` on the Python path.)
-
----
-
-## 12. Glossary
-
-| Term | Meaning |
-|---|---|
-| **DPD** | Days past due: how many days a payment is late |
-| **Gini / AUC** | Ranking-quality metrics; Gini = 2·AUC − 1 |
-| **KS** | Maximum separation between cumulative bad and good curves |
-| **Decile / quintile** | Customers sorted by risk and split into 10 / 5 equal groups |
-| **Lift** | Group bad rate ÷ average bad rate |
-| **IV / WOE** | Information value / weight of evidence: classic scorecard variable-strength measures |
-| **Stratified CV** | Cross-validation keeping the same bad share in every fold |
-| **Regularisation** | Penalty that keeps a model simple to avoid memorising noise |
-| **Utilisation** | Balance ÷ credit limit |
-| **PSI** | Population stability index: measures drift between model-build and live data |
-| **PD** | Probability of default |
-
----
-
-## 13. Repository layout and how to run
+## 10. Repository layout and how to run
 
 ```
 credit-risk-scorecard/
